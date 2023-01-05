@@ -98,7 +98,7 @@ func main() {
 	err = godotenv.Load(environmentPath)
 	errLinuxConfigLoading := godotenv.Load(linuxEnvironmentPath)
 	if err != nil && errLinuxConfigLoading != nil {
-		log.Fatal("Error loading .env file \n Check .env in current directory or in /usr/local/etc/isp_checker")
+		log.Fatal("Error loading .env file \n Check .env in current directory or in /usr/local/etc/ipsec_checker")
 	}
 
 	appEnv := os.Getenv("APP_ENV")
