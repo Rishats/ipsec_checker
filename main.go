@@ -41,9 +41,12 @@ func sendToHorn(text string) {
 // checkConnections checks the connection to a list of IP addresses and sends a POST
 // request with the IP address of any failed connection. If all connections fail, it
 // restarts the ipsec service.
-func checkConnections(ips []string, hostname string, probe int) {
+func checkConnections(ips []string, hostname string, probe, sleep int) {
 	failCount := 0
+
 	for {
+		time.Sleep(time.Duration(sleep) * time.Second)
+
 		// Check the connection to each IP address
 		for _, ip := range ips {
 			// Test the connection to the IP address using the ping command
@@ -124,5 +127,11 @@ func main() {
 		panic("[IPSEC Checker] ENV PROBE is not valid! Only integer allowed")
 	}
 
-	checkConnections(ips, hostname, probe)
+	// convert probe to int
+	sleep, err := strconv.Atoi(os.Getenv("SLEEP"))
+	if err != nil {
+		panic("[IPSEC Checker] ENV SLEEP is not valid! Only integer allowed")
+	}
+
+	checkConnections(ips, hostname, probe, sleep)
 }
