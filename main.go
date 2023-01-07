@@ -61,11 +61,11 @@ func checkConnections(ips []string, hostname string, probe, sleep int) {
 				failCount++
 
 				// The connection failed, send a POST request with the IP address
-				sendToHorn(fmt.Sprintf("*IPSEC Checker* ```"+hostname+"``` Connection to %s failed ‼️", ip))
+				sendToHorn(fmt.Sprintf("*IPSEC Checker "+strconv.Itoa(failCount)+"/"+strconv.Itoa(probe)+"* ```"+hostname+"``` Connection to %s failed ‼️", ip))
 
 				if failCount >= probe {
 					log.Printf("[IPSEC Checker] Restarting IPSec!")
-					err := exec.Command("service", "ipsec", "restart").Run()
+					err := exec.Command("ipsec", "restart").Run()
 					if err != nil {
 						log.Printf("[IPSEC Checker][ERROR] Restarting IPSec!")
 						sendToHorn(fmt.Sprintf("*IPSEC Checker* ```" + hostname + "``` Restart IPSec Failed! Try manually! ```sudo ipsec restart``` 💀"))
@@ -75,8 +75,9 @@ func checkConnections(ips []string, hostname string, probe, sleep int) {
 					time.Sleep(30 * time.Second)
 
 					// Check the status of the ipsec service
-					output, _ := exec.Command("service", "ipsec", "status").Output()
+					output, _ := exec.Command("ipsec", "status").Output()
 					fmt.Println(string(output))
+					failCount = 0
 					break
 				}
 			}
